@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Announcement;
+use App\Models\Baptism;
 use App\Models\Message;
-use Illuminate\Http\Request;
 use App\Models\Leader;
 use App\Models\Member;
 use App\Models\LeaderPosition;
@@ -19,6 +19,7 @@ class AdminViewPageController extends Controller
         return view('users.admin.pages.admin_dashboard_page', [
             'leaders' => Leader::all(),
             'members' => Member::all(),
+            'baptisms' => Baptism::all(),
             'leaderPositions' => LeaderPosition::all(),
             'groups' => Group::all(),
             'users' => User::all(),
@@ -32,6 +33,7 @@ class AdminViewPageController extends Controller
         return view('users.admin.pages.adminUsersPage', [
             'leaders' => Leader::all(),
             'members' => Member::all(),
+            'baptisms' => Baptism::all(),
             'leaderPositions' => LeaderPosition::all(),
             'groups' => Group::all(),
             'users' => User::all(),
@@ -45,6 +47,7 @@ class AdminViewPageController extends Controller
         return view('users.admin.pages.adminMembersPage', [
             'leaders' => Leader::all(),
             'members' => Member::all(),
+            'baptisms' => Baptism::all(),
             'leaderPositions' => LeaderPosition::all(),
             'groups' => Group::all(),
             'users' => User::all(),
@@ -59,6 +62,7 @@ class AdminViewPageController extends Controller
         return view('users.admin.pages.admin_groups_page', [
             'leaders' => Leader::all(),
             'members' => Member::all(),
+            'baptisms' => Baptism::all(),
             'leaderPositions' => LeaderPosition::all(),
             'groups' => Group::all(),
             'users' => User::all(),
@@ -73,6 +77,7 @@ class AdminViewPageController extends Controller
         return view('users.admin.pages.admin_leader_positions', [
             'leaders' => Leader::all(),
             'members' => Member::all(),
+            'baptisms' => Baptism::all(),
             'leaderPositions' => LeaderPosition::all(),
             'groups' => Group::all(),
             'users' => User::all(),
@@ -86,6 +91,37 @@ class AdminViewPageController extends Controller
     {
         return view('users.admin.pages.admin_leaders_page', [
             'leaders' => Leader::all(),
+            'members' => Member::all(),
+            'baptisms' => Baptism::all(),
+            'leaderPositions' => LeaderPosition::all(),
+            'groups' => Group::all(),
+            'users' => User::all(),
+            'messages' => Message::all(),
+            'announcements' => Announcement::all(),
+            'user' => Auth::user(),
+        ]);
+    }
+
+    public function adminViewAnnouncementsPage()
+    {
+        return view('users.admin.pages.admin_announcements_page', [
+            'leaders' => Leader::all(),
+            'members' => Member::all(),
+            'baptisms' => Baptism::all(),
+            'leaderPositions' => LeaderPosition::all(),
+            'groups' => Group::all(),
+            'users' => User::all(),
+            'messages' => Message::all(),
+            'announcements' => Announcement::all(),
+            'user' => Auth::user(),
+        ]);
+    }
+
+    public function adminViewBaptismsPage()
+    {
+        return view('users.admin.pages.admin_baptism_page', [
+            'leaders' => Leader::all(),
+            'baptisms' => Baptism::all(),
             'members' => Member::all(),
             'leaderPositions' => LeaderPosition::all(),
             'groups' => Group::all(),

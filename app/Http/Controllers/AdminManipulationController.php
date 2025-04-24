@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Announcement;
+use App\Models\Baptism;
 use App\Models\Group;
 use App\Models\Leader;
 use App\Models\LeaderPosition;
@@ -11,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -341,6 +344,7 @@ class AdminManipulationController extends Controller
 
 
 
+
     // ******************************************* start LEADER ****************************************************
     public function adminAddLeader(Request $request)
     {
@@ -363,13 +367,16 @@ class AdminManipulationController extends Controller
 
         $validated['member_id'] = Str::trim($validated['member_id']);
 
-        $leader = Leader::where('member_id', $validated['member_id'])->get();
+        // Leader -> member_id => contains member->id ...not member_id
+        $member = Member::where('member_id', $validated['member_id'])->first();
+        $validated['member_id'] = $member->id;
+        $leader = Leader::where('member_id', $validated['member_id'])->first();
 
-        if($leader->leader_position_id == $validated['leader_position_id'] && $leader->member_id == $validated['member_id']){
-            return redirect()->back()->with('error', 'Kiongozi ashasajiliwa na hii nafasi');
+        if(!empty($leader)){
+            if($leader->leader_position_id == $validated['leader_position_id'] && $leader->member_id == $validated['member_id']){
+                return redirect()->back()->with('error', 'Kiongozi ashasajiliwa na hii nafasi');
+            }
         }
-
-        dd($validated);
 
         Leader::create($validated);
 
@@ -381,7 +388,7 @@ class AdminManipulationController extends Controller
         $validated = $request->validate([
             'id'                            => 'required',
             'user_id'                       => 'required',
-            'member_id'                     => 'required|max:8|exists:members,member_id',
+            'member_id'                     => 'required|max:8|exists:members,id',
             'group_id'                      => 'required|exists:groups,id',
             'leader_position_id'            => ['required', 'exists:leader_positions,id', Rule::unique('leaders', 'leader_positions_id')->ignore($request->leader_position_id)],
             'status'                        => 'required',
@@ -420,4 +427,191 @@ class AdminManipulationController extends Controller
     }
 
     // ********************************************* end LEADER ****************************************************
+
+
+
+
+
+    // ********************************************* start ANNOUNCEMENTS ********************************************
+    public function adminAddAnnouncement(Request $request)
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'announcement_type' => 'required',
+            'description' => 'required|string',
+            'announcement_asset' => 'required|file|mimes:jpg,jpeg,png,pdf,doc,docx',
+        ], [
+            'announcement_type.required' => 'Aina ya taarifa inahitajika.',
+            'description.required' => 'Maelezo ya taarifa yanahitajika.',
+            'description.string' => 'Maelezo lazima yawe maandishi.',
+            'announcement_asset.required' => 'Tafadhali weka faili la taarifa.',
+            'announcement_asset.file' => 'Faili lazima liwe halali.',
+            'announcement_asset.mimes' => 'Faili linapaswa kuwa aina ya: jpg, jpeg, png, pdf, doc, au docx.',
+        ]);
+
+        $extension = $request->file('announcement_asset')->getClientOriginalExtension();
+        $filename = 'announcement_' . now()->format('Ymd') . '_' . rand(1000, 9999) . '.' . $extension;
+        $filePath = $request->file('announcement_asset')->storeAs('announcements', $filename, 'public');
+        $validated['announcement_asset'] = $filePath;
+
+        Announcement::create($validated);
+
+        return redirect()->back()->with('success', 'Tangazo limeongezwa kikamilifu');
+    }
+
+
+    public function adminUpdateAnnouncement(Request $request)
+    {
+        $validated = $request->validate([
+            'id' => 'required',
+            'user_id' => 'required|exists:users,id',
+            'announcement_type' => 'required',
+            'description' => 'required|string',
+            'announcement_asset' => 'required|file|mimes:jpg,jpeg,png,pdf,doc,docx',
+        ], [
+            'announcement_type.required' => 'Aina ya taarifa inahitajika.',
+            'description.required' => 'Maelezo ya taarifa yanahitajika.',
+            'description.string' => 'Maelezo lazima yawe maandishi.',
+            'announcement_asset.required' => 'Tafadhali weka faili la taarifa.',
+            'announcement_asset.file' => 'Faili lazima liwe halali.',
+            'announcement_asset.mimes' => 'Faili linapaswa kuwa aina ya: jpg, jpeg, png, pdf, doc, au docx.',
+        ]);
+
+        $announcement = Announcement::findOrFail($validated['id']);
+
+        if($announcement->announcement_asset != $validated['announcement_asset']){
+            $extension = $request->file('announcement_asset')->getClientOriginalExtension();
+            $filename = 'announcement_' . now()->format('Ymd') . '_' . rand(1000, 9999) . '.' . $extension;
+            $filePath = $request->file('announcement_asset')->storeAs('announcements', $filename, 'public');
+            $validated['announcement_asset'] = $filePath;
+
+            Storage::delete('public' . $announcement->announcement_asset);
+        }
+
+        $announcement->update($validated);
+
+        return redirect()->back()->with('success', 'Tangazo limehaririwa kikamilifu');
+    }
+
+    public function adminDeleteAnnouncement($id)
+    {
+        $announcement = Announcement::findOrFail($id);
+        $asset = $announcement->announcement_asset;
+
+        if($asset == null){
+            return redirect()->back()->with('error', 'Faili la Tangazo halipo');
+        }
+
+        Storage::delete('storage/' . $asset);
+        $announcement->delete();
+
+        return redirect()->back()->with('success', 'Tangazo limefutwa kikamilifu');
+    }
+
+    // ********************************************* end ANNOUNCEMENTS **********************************************
+
+
+
+
+    // ********************************************* start BAPTISM **********************************************
+    public function adminAddBaptism(Request $request)
+    {
+        $validated = $request->validate([
+            'user_id'                   => 'required|exists:users,id',
+            'father_member_id'          => 'required|exists:members,member_id',
+            'mother_member_id'          => 'required|exists:members,member_id',
+            'baby_firstname'            => 'required|string',
+            'baby_middlename'           => 'required|string',
+            'baby_lastname'             => 'required|string',
+            'dateOfBirth'               => 'required',
+            'dateOfBaptism'             => 'required',
+            'status'                    => 'required'
+        ], [
+            'father_member_id.required' => 'Ingiza namba ya mshirika (Baba)',
+            'mother_member_id.required' => 'Ingiza namba ya mshirika (Mama)',
+            'mother_member_id.exists'   => 'Namba ya mshirika (Mama) haipo',
+            'father_member_id.exists'   => 'Namba ya mshirika (Baba) haipo',
+            'baby_firstname.required'   => 'Ingiza Jina la kwanza',
+            'baby_middlename.required'  => 'Ingiza Jina la Kati',
+            'baby_lastname.required'    => 'Ingiza Jina la Mwisho',
+            'dateOfBirth.required'      => 'Ingiza tarehe ya kuzaliwa',
+            'dateOfBaptism.required'    => 'Ingiza tarehe ya kubatizwa',
+            'status.required'           => 'Ingiza hali'
+        ]);
+
+        $father = Member::where('member_id', $validated['father_member_id'])
+                        ->where('sex', 'Mwanaume')
+                        ->first();
+
+        $mother = Member::where('member_id', $validated['mother_member_id'])
+                        ->where('sex', 'Mwanamke')
+                        ->first();
+
+        if($father == null){
+            return redirect()->back()->with('error', 'Namba ya mshirika ya baba si Mwanaume')->withInput();
+        }
+
+        if($mother == null){
+            return redirect()->back()->with('error', 'Namba ya mshirika ya mama si Mwanamke')->withInput();
+        }
+
+        $validated['father_member_id'] = $father->id;
+        $validated['mother_member_id'] = $mother->id;
+
+        $validated['baby_firstname'] = Str::title(Str::lower($validated['baby_firstname']));
+        $validated['baby_middlename'] = Str::title(Str::lower($validated['baby_middlename']));
+        $validated['baby_lastname'] = Str::title(Str::lower($validated['baby_lastname']));
+
+
+        $validated['age'] = $this->displayAge($validated['dateOfBirth']);
+        // $validated['age'] = Carbon::parse($validated['dateOfBirth'])->age;
+
+        //  dd($validated);
+
+        Baptism::create($validated);
+
+        return redirect()->back()->with('success', 'Ubatizo umeongezwa kikamilifu');
+    }
+
+    public function adminEditBaptism(Request $request)
+    {
+
+    }
+
+    public function adminDeleteBaptism($id)
+    {
+        $baptism = Baptism::findOrFail($id);
+        $baptism->delete();
+
+        return redirect()->back()->with('success', 'Ubatizo umefutwa kikamilifu');
+    }
+
+    public function displayAge($birthDate)
+    {
+        $age = Carbon::parse($birthDate)->diff(Carbon::now());
+
+        if ($age->y == 0){
+            if($age->m > 1){
+                return 'miezi ' . $age->m;
+            }else{
+                return 'mwezi ' . $age->m;
+            }
+        }else{
+            if($age->y == 1){
+                if($age->m > 1){
+                    return 'mwaka '.  $age->y . ' na miezi '. $age->m;
+                }else{
+                    return 'mwaka '.  $age->y . ' na mwezi '. $age->m;
+                }
+            }else{
+                if($age->m > 1){
+                    return 'miaka '.  $age->y . ' na miezi '. $age->m;
+                }else{
+                    return 'miaka '.  $age->y . ' na mwezi '. $age->m;
+                }
+            }
+        }
+    }
+    // ********************************************* end BAPTISM **********************************************
+
 }

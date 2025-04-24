@@ -210,11 +210,21 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="nav-link">
+                                <a href="{{ route('admin.announcements.page') }}" class="nav-link">
                                     <span class="mx-3"></span>
                                     <i class="bi bi-megaphone-fill"></i>
                                     <p>
                                         Matangazo
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('admin.baptisms.page') }}" class="nav-link">
+                                    <span class="mx-3"></span>
+                                    <i class="bi bi-stars"></i>
+                                    <p>
+                                        Ubatizo
+                                        <span class="nav-badge badge text-bg-success me-2">{{ $baptisms->count()  }}</span>
                                     </p>
                                 </a>
                             </li>
@@ -333,81 +343,74 @@
     </footer>
     <!--end::Footer-->
 
-</div>
-<!--end::App Wrapper-->
+    <!-- Modal - ADMIN LEADER REGISTER -->
+    <div class="modal fade" id="addLeaderModal" tabindex="-1" aria-labelledby="addLeaderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form action="{{ route('admin.add.leader') }}" method="POST" x-data="{ loading: false }" @submit.prevent="loading = true; $el.submit()">
+                    @csrf
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="addLeaderModalLabel">Ongeza Kiongozi</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="user_id" value="{{ $user->id }}">
 
+                        <livewire:check-member-id />
 
-<!-- Modal - ADMIN LEADER REGISTER -->
-<div class="modal fade" id="addLeaderModal" tabindex="-1" aria-labelledby="addLeaderModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form action="{{ route('admin.add.leader') }}" method="POST" x-data="{ loading: false }" @submit.prevent="loading = true; $el.submit()">
-                @csrf
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="addLeaderModalLabel">Ongeza Kiongozi</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="user_id" value="{{ $user->id }}">
-{{--                    <div class="mb-3">--}}
-{{--                        <label for="member_id" class="form-label">Namba ya Mshirika</label>--}}
-{{--                        <input type="text" class="form-control" value="{{ old('member_id') }}"--}}
-{{--                               name="member_id" id="member_id" placeholder="Ingiza namba ya Mshirika">--}}
-{{--                        @error('member_id') <span class="text-danger">{{ $message }}</span> @enderror--}}
-{{--                    </div>--}}
-
-                    <livewire:check-member-id />
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="leader_position_id" class="form-label">Nafasi ya Mshirika</label>
-                                <select name="leader_position_id" id="leader_position_id" class="form-select">
-                                    <option value="">--chagua nafasi--</option>
-                                    @foreach($leaderPositions as $position)
-                                        <option value="{{ $position->id }}">{{ $position->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('leader_position_id') <span class="text-danger">{{ $message }}</span> @enderror
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="leader_position_id" class="form-label">Nafasi ya Kiongozi</label>
+                                    <select name="leader_position_id" id="leader_position_id" class="form-select">
+                                        <option value="">--chagua nafasi--</option>
+                                        @foreach($leaderPositions as $position)
+                                            <option value="{{ $position->id }}">{{ $position->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('leader_position_id') <span class="text-danger">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="group_id" class="form-label">Kikundi</label>
+                                    <select name="group_id" id="group_id" class="form-select">
+                                        <option value="">--chagua kikundi--</option>
+                                        @foreach($groups as $group)
+                                            <option value="{{ $group->id }}">{{ $group->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('group_id') <span class="text-danger">{{ $message }}</span> @enderror
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="group_id" class="form-label">Kikundi</label>
-                                <select name="group_id" id="group_id" class="form-select">
-                                    <option value="">--chagua kikundi--</option>
-                                    @foreach($groups as $group)
-                                        <option value="{{ $group->id }}">{{ $group->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('group_id') <span class="text-danger">{{ $message }}</span> @enderror
-                            </div>
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Hali</label>
+                            <select name="status" id="status" class="form-select">
+                                <option value="">-- chagua hali --</option>
+                                <option value="Hai">Hai</option>
+                                <option value="Siohai">Siohai</option>
+                            </select>
+                            @error('status') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="status" class="form-label">Hali</label>
-                        <select name="status" id="status" class="form-select">
-                            <option value="">-- chagua hali --</option>
-                            <option value="Hai">Hai</option>
-                            <option value="Siohai">Siohai</option>
-                        </select>
-                        @error('status') <span class="text-danger">{{ $message }}</span> @enderror
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sitisha</button>
+                        <button type="submit"
+                                class="btn btn-primary d-flex align-items-center justify-content-center gap-2"
+                                :disabled="loading">
+                            <!-- Spinner shown only when loading -->
+                            <span x-show="loading" class="spinner-border spinner-border-sm" role="status"
+                                  aria-hidden="true"></span>
+                            <span>Ongeza Kiongozi</span>
+                        </button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sitisha</button>
-                    <button type="submit"
-                            class="btn btn-primary d-flex align-items-center justify-content-center gap-2"
-                            :disabled="loading">
-                        <!-- Spinner shown only when loading -->
-                        <span x-show="loading" class="spinner-border spinner-border-sm" role="status"
-                              aria-hidden="true"></span>
-                        <span>Ongeza Kiongozi</span>
-                    </button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
+
 </div>
+<!--end::App Wrapper-->
 
 @include('includes.dashboardFooter')

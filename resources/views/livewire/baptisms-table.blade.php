@@ -50,16 +50,16 @@
                         <option value="100">100</option>
                     </select>
 
-                    @if(count($selectedLeaders) > 1)
+                    @if(count($selectedBaptisms) > 1)
                         <!-- Delete button only visible on md+ -->
                         <button class="btn btn-danger d-none d-md-block" data-bs-toggle="modal"
-                                data-bs-target="#deleteSelectedLeaderModal">
+                                data-bs-target="#deleteSelectedBaptismModal">
                             <i class="bi bi-trash text-light"></i> Futa Zote
                         </button>
-                    @elseif(count($selectedLeaders) == 1)
+                    @elseif(count($selectedBaptisms) == 1)
                         <!-- Delete button only visible on md+ -->
                         <button class="btn btn-danger d-none d-md-block" data-bs-toggle="modal"
-                                data-bs-target="#deleteSelectedLeaderModal">
+                                data-bs-target="#deleteSelectedBaptismModal">
                             <i class="bi bi-trash text-light"></i> Futa
                         </button>
                     @endif
@@ -88,19 +88,19 @@
                         <ul class="dropdown-menu dropdown-menu-end">
 
                             <!-- Only show Futa Zote inside dropdown on sm -->
-                            @if(count($selectedLeaders) > 1)
+                            @if(count($selectedBaptisms) > 1)
                                 <!-- Delete button only visible on md+ -->
                                 <li class="d-md-none">
                                     <a class="dropdown-item text-danger" href="#" style="cursor: pointer;"
-                                       data-bs-toggle="modal" data-bs-target="#deleteSelectedLeaderModal">
+                                       data-bs-toggle="modal" data-bs-target="#deleteSelectedBaptismModal">
                                         <i class="bi bi-trash-fill me-1"></i> Futa Zote
                                     </a>
                                 </li>
-                            @elseif(count($selectedLeaders) == 1)
+                            @elseif(count($selectedBaptisms) == 1)
                                 <!-- Delete button only visible on md+ -->
                                 <li class="d-md-none">
                                     <a class="dropdown-item text-danger" href="#" style="cursor: pointer;"
-                                       data-bs-toggle="modal" data-bs-target="#deleteSelectedLeaderModal">
+                                       data-bs-toggle="modal" data-bs-target="#deleteSelectedBaptismModal">
                                         <i class="bi bi-trash-fill me-1"></i> Futa
                                     </a>
                                 </li>
@@ -133,40 +133,44 @@
                            value="select-all-">
                 </th>
                 <th>#</th>
-                <th>Namba ya Mshirika</th>
-                <th>Jina Kamili</th>
-                <th>Nafasi</th>
-                <th>Kiongozi</th>
+                <th>Jina la Baba (Namba)</th>
+                <th>Jina la Mama (Namba)</th>
+                <th>Jina la Mtoto</th>
+                <th>Tarehe ya Kuzaliwa</th>
+                <th>Umri</th>
+                <th>Tarehe ya Kubatizwa</th>
                 <th>Alie Unda</th>
-                <th>Hali ya Kiongozi</th>
+                <th>Hali</th>
                 <th>Tarehe ya Kuundwa</th>
                 <th>Vitendo</th>
             </tr>
             </thead>
             <tbody>
             @php
-                $id = $leaders->firstItem();
+                $id = $baptisms->firstItem();
             @endphp
-            @forelse($leaders as $leader)
-                <tr class="py-2" wire:key="leader-{{ $leader->id }}">
+            @forelse($baptisms as $baptism)
+                <tr class="py-2" wire:key="baptism-{{ $baptism->id }}">
                     <td>
-                        <input wire:model.live="selectedLeaders" type="checkbox" id="bulk-select"
-                               value="{{ $leader->id }}">
+                        <input wire:model.live="selectedBaptisms" type="checkbox" id="bulk-select"
+                               value="{{ $baptism->id }}">
                     </td>
                     <td>{{ $id++ }}</td>
-                    <td>{{ $leader->member->member_id }}</td>
-                    <td>{{ $leader->member->firstname .' '. $leader->member->middlename .' '. $leader->member->lastname  }}</td>
-                    <td>{{ $leader->leaderPosition->name }}</td>
-                    <td>{{ $leader->group->name }}</td>
-                    <td>{{ $leader->user->name .' ('. Str::title($leader->user->user_type) .')' }}</td>
+                    <td>{{ $baptism->father->firstname .' '. $baptism->father->middlename .' '. $baptism->father->lastname }}</td>
+                    <td>{{ $baptism->mother->firstname .' '. $baptism->mother->middlename .' '. $baptism->mother->lastname }}</td>
+                    <td>{{ $baptism->baby_firstname .' '. $baptism->baby_middlename .' '. $baptism->baby_lastname }}</td>
+                    <td>{{ $baptism->dateOfBirth }}</td>
+                    <td>{{ $baptism->age }}</td>
+                    <td>{{ $baptism->dateOfBaptism }}</td>
+                    <td>{{ $baptism->user->name .' ('. Str::title($baptism->user->user_type) .')' }}</td>
                     <td>
-                        @if($leader->status == 'Hai')
+                        @if($baptism->status == 'Hai')
                             <span class="badge text-bg-success rounded-full">Hai</span>
                         @else
                             <span class="badge text-bg-danger rounded-full">Siohai</span>
                         @endif
                     </td>
-                    <td>{{ $leader->created_at }}</td>
+                    <td>{{ $baptism->created_at }}</td>
                     <td class="text-center">
                         <div class="dropdown">
                             <button class="my-dropbtn btn btn-transparent border-0 dropdown-toggle shadow-none"
@@ -176,19 +180,19 @@
                             <ul class="dropdown-menu" style="z-index: 1000;">
                                 <li>
                                     <button type="button" class="dropdown-item text-secondary" data-bs-toggle="modal"
-                                            data-bs-target="#viewLeaderModal{{ $leader->id }}" style="cursor: pointer;">
+                                            data-bs-target="#viewBaptismModal{{ $baptism->id }}" style="cursor: pointer;">
                                         <i class="bi bi-eye-fill me-1"></i> Tazama
                                     </button>
                                 </li>
                                 <li>
                                     <button type="button" class="dropdown-item text-success" data-bs-toggle="modal"
-                                            data-bs-target="#editLeaderModal{{ $leader->id }}" style="cursor: pointer;">
+                                            data-bs-target="#editBaptismModal{{ $baptism->id }}" style="cursor: pointer;">
                                         <i class="bi bi-pen-fill me-1"></i> Hariri
                                     </button>
                                 </li>
                                 <li>
                                     <button type="button" class="dropdown-item text-danger" style="cursor: pointer;"
-                                            data-bs-toggle="modal" data-bs-target="#deleteLeaderModal{{ $leader->id }}">
+                                            data-bs-toggle="modal" data-bs-target="#deleteBaptismModal{{ $baptism->id }}">
                                         <i class="bi bi-trash-fill me-1"></i> Futa
                                     </button>
                                 </li>
@@ -211,14 +215,14 @@
         </table>
 
 
-        @if($leaders->count() > 0)
+        @if($baptisms->count() > 0)
             <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
                 <div class="text-muted small mb-2">
-                    Ukurasa {{ $leaders->currentPage() }} ya {{ $leaders->lastPage() }} | Jumla ya
-                    Viongozi: {{ $leaders->total() }}
+                    Ukurasa {{ $baptisms->currentPage() }} ya {{ $baptisms->lastPage() }} | Jumla ya
+                    Ubatizo: {{ $baptisms->total() }}
                 </div>
                 <nav aria-label="Page navigation">
-                    {{ $leaders->links('vendor.pagination.custom-bootstrap') }}
+                    {{ $baptisms->links('vendor.pagination.custom-bootstrap') }}
                 </nav>
             </div>
         @else
@@ -228,62 +232,80 @@
     </div>
 
 
-    <!-- Modal - ADMIN LEADER VIEW -->
-    @foreach($leaders as $leader)
-        <div class="modal fade" id="viewLeaderModal{{ $leader->id }}" tabindex="-1"
-             aria-labelledby="viewLeaderModal{{ $leader->id }}Label" aria-hidden="true">
+        <!-- Modal - ADMIN VIEW -->
+    @foreach($baptisms as $baptism)
+        <div class="modal fade" id="viewBaptismModal{{ $baptism->id }}" tabindex="-1"
+             aria-labelledby="viewBaptismModal{{ $baptism->id }}Label" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="viewLeaderModal{{ $leader->id }}Label">Tazama Kiongozi</h1>
+                        <h1 class="modal-title fs-5" id="viewBaptismModal{{ $baptism->id }}Label">Tazama Ubatizo</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="member_id" class="form-label">Namba ya Mshirika</label>
-                                    <input type="text" value="{{ $leader->member->member_id }}" class="form-control fw-bold" readonly>
+                                    <label for="father_member_id" class="form-label">Jina la Baba (Namba)</label>
+                                    <input type="text" value="{{ $baptism->father->firstname .' '. $baptism->father->middlename .' '. $baptism->father->lastname .'('.$baptism->father->member_id .')' }}" class="form-control fw-bold" readonly>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="user_id" class="form-label">Alie Kiunda</label>
-                                    <input type="text" value="{{ $leader->user->name .' ('. Str::title($leader->user->user_type) .')' }}" class="form-control fw-bold" readonly>
+                                    <label for="mother_member_id" class="form-label">Jina la Mama (Namba)</label>
+                                    <input type="text" value="{{ $baptism->mother->firstname .' '. $baptism->mother->middlename .' '. $baptism->mother->lastname .'('.$baptism->mother->member_id .')' }}" class="form-control fw-bold" readonly>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="name" class="form-label">Jina Kamili</label>
-                                    <input type="text" value="{{ $leader->member->firstname .' '. $leader->member->middlename  .' '. $leader->member->lastname }}" class="form-control fw-bold" readonly>
+                                    <label for="baby_name" class="form-label">Jina la Mtoto</label>
+                                    <input type="text" value="{{ $baptism->baby_firstname .' '. $baptism->baby_middlename  .' '. $baptism->baby_lastname }}" class="form-control fw-bold" readonly>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="position" class="form-label">Nafasi ya Kiongozi</label>
-                                    <input type="text" value="{{ $leader->leaderPosition->name }}" class="form-control fw-bold" readonly>
+                                    <label for="dateOfBirth" class="form-label">Tarehe ya Kuzaliwa</label>
+                                    <input type="text" value="{{ $baptism->dateOfBirth }}" class="form-control fw-bold" readonly>
                                 </div>
                             </div>
                         </div>
+
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="name" class="form-label">Kikundi</label>
-                                    <input type="text" value="{{ $leader->group->name }}" class="form-control fw-bold" readonly>
+                                    <label for="age" class="form-label">Umri</label>
+                                    <input type="text" value="{{ $baptism->age }}" class="form-control fw-bold" readonly>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="dateOfBaptism" class="form-label">Tarehe ya Kubatizwa</label>
+                                    <input type="text" value="{{ $baptism->dateOfBaptism }}" class="form-control fw-bold" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="mb-3">
                                     <label for="status" class="form-label">Hali</label>
-                                    <input type="text" value="{{ $leader->status }}" class="form-control fw-bold" readonly>
+                                    <input type="text" value="{{ $baptism->status }}" class="form-control fw-bold" readonly>
                                 </div>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="created_at" class="form-label">Tarehe ya Kuundwa</label>
-                            <input type="text" value="{{ $leader->created_at }}" class="form-control fw-bold" readonly>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="user_id" class="form-label">Alie Unda</label>
+                                    <input type="text" value="{{ $baptism->user->name .'('. $baptism->user->user_type .')' }}" class="form-control fw-bold" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="created_at" class="form-label">Tarehe ya Kuundwa</label>
+                                    <input type="text" value="{{ $baptism->created_at }}" class="form-control fw-bold" readonly>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -297,66 +319,75 @@
 
 
     <!-- Modal - ADMIN LEADER EDIT -->
-    @foreach($leaders as $leader)
-        <div class="modal fade" id="editLeaderModal{{ $leader->id }}" tabindex="-1"
-             aria-labelledby="editLeaderModal{{ $leader->id }}Label" aria-hidden="true">
+    @foreach($baptisms as $baptism)
+        <div class="modal fade" id="editBaptismModal{{ $baptism->id }}" tabindex="-1"
+             aria-labelledby="editBaptismModal{{ $baptism->id }}Label" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <form action="{{ route('admin.edit.leader') }}" method="POST" x-data="{ loading: false }"
+                    <form action="{{ route('admin.edit.baptism') }}" method="POST" x-data="{ loading: false }"
                           @submit.prevent="loading = true; $el.submit()">
                         @csrf
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="editLeaderModal{{ $leader->id }}Label">Hariri Kiongozi</h1>
+                            <h1 class="modal-title fs-5" id="editBaptismModal{{ $baptism->id }}Label">Hariri Ubatizo</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <input type="text" value="{{ $leader->id }}" name="id" hidden>
-                            <input type="text" value="{{ $leader->user_id }}" name="user_id" class="form-control" hidden>
+                            <input type="text" value="{{ $baptism->id }}" name="id" hidden>
+                            <input type="text" value="{{ $baptism->user_id }}" name="user_id" class="form-control" hidden>
 
-                            <livewire:update-check-member-id :leader-id="$leader->id" />
+                            {{-- <livewire:update-check-member-id :baptism-id="$baptism->id" /> --}}
+
+                            <livewire:baptism-update-parents-check-id :father-id="$baptism->father->id" :mother-id="$baptism->mother->id" />
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="baby_firstname" class="form-label">Jina la Kwanza (Mtoto)</label>
+                                        <input type="text" class="form-control" value="{{ old('baby_firstname', $baptism->baby_firstname ) }}" name="baby_firstname" id="baby_firstname" placeholder="Ingiza jina la kwanza la mtoto...">
+                                        @error('baby_firstname') <span class="text-danger">{{ $message }}</span> @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="baby_middlename" class="form-label">Jina la Kati (Mtoto)</label>
+                                        <input type="text" class="form-control" name="baby_middlename" value="{{ old('baby_middlename', $baptism->baby_middlename ) }}" id="baby_middlename" placeholder="Ingiza jina la kati la mtoto...">
+                                        @error('baby_middlename') <span class="text-danger">{{ $message }}</span> @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="baby_lastname" class="form-label">Jina la Mwisho (Mtoto)</label>
+                                        <input type="text" class="form-control" name="baby_lastname" id="baby_lastname" value="{{ old('baby_lastname', $baptism->baby_lastname ) }}" placeholder="Ingiza jina la mwisho la mtoto...">
+                                        @error('baby_lastname') <span class="text-danger">{{ $message }}</span> @enderror
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="leader_position_id" class="form-label">Nafasi ya Mshirika</label>
-                                        <select name="leader_position_id" id="leader_position_id" class="form-select">
-                                            <option value="">--chagua nafasi--</option>
-                                            @foreach($leaderPositions as $position)
-                                                @if($leader->leader_position_id == $position->id)
-                                                    <option value="{{ $position->id }}" selected>{{ $position->name }}</option>
-                                                @else
-                                                    <option value="{{ $position->id }}">{{ $position->name }}</option>
-                                                @endif
-                                            @endforeach
-                                        </select>
-                                        @error('leader_position_id') <span class="text-danger">{{ $message }}</span> @enderror
+                                        <label for="dateOfBirth" class="form-label">Tarehe ya Kuzaliwa (Mtoto)</label>
+                                        <input type="date" class="form-control" name="dateOfBirth" value="{{ old('dateOfBirth', $baptism->dateOfBirth) }}" id="dateOfBirth" placeholder="Ingiza tarehe ya kuzaliwa ya mtoto...">
+                                        @error('dateOfBirth') <span class="text-danger">{{ $message }}</span> @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="group_id" class="form-label">Kikundi</label>
-                                        <select name="group_id" id="group_id" class="form-select">
-                                            <option value="">--chagua kikundi--</option>
-                                            @foreach($groups as $group)
-                                                @if($leader->group_id == $group->id)
-                                                    <option value="{{ $group->id }}" selected>{{ $group->name }}</option>
-                                                @else
-                                                    <option value="{{ $group->id }}">{{ $group->name }}</option>
-                                                @endif
-                                            @endforeach
-                                        </select>
-                                        @error('group_id') <span class="text-danger">{{ $message }}</span> @enderror
+                                        <label for="dateOfBaptism" class="form-label">Tarehe ya Kubatizwa (Mtoto)</label>
+                                        <input type="date" class="form-control" name="dateOfBaptism" value="{{ old('dateOfBaptism', $baptism->dateOfBaptism) }}" id="dateOfBaptism" placeholder="Ingiza tarehe ya kubatizwa kwa mtoto...">
+                                        @error('dateOfBaptism') <span class="text-danger">{{ $message }}</span> @enderror
                                     </div>
                                 </div>
                             </div>
+
                             <div class="mb-3">
                                 <label for="status" class="form-label">Hali</label>
                                 <select name="status" id="status" class="form-select">
-                                    @if($leader->status == 'Hai')
+                                    @if($baptism->status == 'Hai')
                                         <option value="">-- chagua hali --</option>
                                         <option value="Hai" selected>Hai</option>
                                         <option value="Siohai">Siohai</option>
-                                    @elseif($leader->status == 'Siohai')
+                                    @elseif($baptism->status == 'Siohai')
                                         <option>-- chagua hali --</option>
                                         <option value="Hai">Hai</option>
                                         <option value="Siohai" selected>Siohai</option>
@@ -389,22 +420,22 @@
 
 
     <!-- Modal - ADMIN USER DELETE -->
-    @foreach($leaders as $leader)
-        <div class="modal fade" id="deleteLeaderModal{{ $leader->id }}" tabindex="-1"
-             aria-labelledby="deleteLeaderModal{{ $leader->id }}Label" aria-hidden="true">
+    @foreach($baptisms as $baptism)
+        <div class="modal fade" id="deleteBaptismModal{{ $baptism->id }}" tabindex="-1"
+             aria-labelledby="deleteBaptismModal{{ $baptism->id }}Label" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header border-o">
-                        <h1 class="modal-title fs-5" id="deleteLeaderModal{{ $leader->id }}Label">Futa Kiongozi</h1>
+                        <h1 class="modal-title fs-5" id="deleteBaptismModal{{ $baptism->id }}Label">Futa Ubatizo</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <p>Unauwakika wa kumfuta kiongozi huyu mwenye jina <span
-                                class="fst-italic text-success">{{ '#' . $leader->member->firstname .' '. $leader->member->middlename .' '. $leader->member->lastname }}</span>?</p>
+                        <p>Unauwakika wa kufuta ubatizo huu wa mtoto mwenye jina <span
+                                class="fst-italic text-success">{{ '#' . $baptism->baby_firstname .' '. $baptism->baby_middlename .' '. $baptism->baby_lastname }}</span>?</p>
                     </div>
                     <div class="modal-footer border-0">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sitisha</button>
-                        <form method="GET" action="{{ route('admin.delete.leader', $leader->id) }}"
+                        <form method="GET" action="{{ route('admin.delete.baptism', $baptism->id) }}"
                               x-data="{ loading: false }" @submit.prevent="loading = true; $el.submit()">
                             <button type="submit"
                                     class="btn btn-danger d-flex align-items-center justify-content-center gap-2"
@@ -412,7 +443,7 @@
                                 <!-- Spinner shown only when loading -->
                                 <span x-show="loading" class="spinner-border spinner-border-sm" role="status"
                                       aria-hidden="true"></span>
-                                <span>Futa Kiongozi</span>
+                                <span>Futa Ubatizo</span>
                             </button>
                         </form>
                     </div>
@@ -424,41 +455,41 @@
 
 
     <!-- Modal - ADMIN DELETE SELECTED LEADERS -->
-    <div class="modal fade" id="deleteSelectedLeaderModal" tabindex="-1" aria-labelledby="deleteSelectedLeaderModalLabel"
+    <div class="modal fade" id="deleteSelectedBaptismModal" tabindex="-1" aria-labelledby="deleteSelectedBaptismModalLabel"
          aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header border-o">
-                    <h1 class="modal-title fs-5" id="deleteSelectedLeaderModalLabel">
-                        @if(count($selectedLeaders) > 1)
-                            Futa Viongozi
-                        @elseif(count($selectedLeaders) == 1)
-                            Futa Kiongozi
+                    <h1 class="modal-title fs-5" id="deleteSelectedBaptismModalLabel">
+                        @if(count($selectedBaptisms) > 1)
+                            Futa Ubatizo
+                        @elseif(count($selectedBaptisms) == 1)
+                            Futa Ubatizo
                         @endif
                     </h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    @if(count($selectedLeaders) > 1)
+                    @if(count($selectedBaptisms) > 1)
                         <p>Unauwakika wa kufuta viongozi hawa?</span>?</p>
-                    @elseif(count($selectedLeaders) == 1)
+                    @elseif(count($selectedBaptisms) == 1)
                         <p>Unauwakika wa kumfuta kiongozi huyu?</span>?</p>
                     @endif
                 </div>
                 <div class="modal-footer border-0">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sitisha</button>
                     <form x-data="{ loading: false }" @submit.prevent="loading = true; $el.submit()">
-                        <button type="submit" wire:click="deleteSelectedLeaders"
+                        <button type="submit" wire:click="deleteSelectedBaptisms"
                                 class="btn btn-danger d-flex align-items-center justify-content-center gap-2"
                                 :disabled="loading">
                             <!-- Spinner shown only when loading -->
                             <span x-show="loading" class="spinner-border spinner-border-sm" role="status"
                                   aria-hidden="true"></span>
                             <span>
-                                @if(count($selectedLeaders) > 1)
-                                    Futa Viongozi
-                                @elseif(count($selectedLeaders) == 1)
-                                    Futa Kiongozi
+                                @if(count($selectedBaptisms) > 1)
+                                    Futa Ubatizo
+                                @elseif(count($selectedBaptisms) == 1)
+                                    Futa Ubatizo
                                 @endif
                                 </span>
                         </button>

@@ -18,15 +18,15 @@ class Leader extends Model
     {
         return empty($search) ? static::query()
             : static::query()
-                ->leftJoin('users', 'leader.user_id', '=', 'users.id')
-                ->leftJoin('members', 'leader.user_id', '=', 'members.member_id')
-                ->leftJoin('groups', 'leader.group_id', '=', 'groups.id')
-                ->leftJoin('leader_positions', 'leader.leader_positions_id', '=', 'leader_positions.id')
+                ->leftJoin('users', 'leaders.user_id', '=', 'users.id')
+                ->leftJoin('members', 'leaders.user_id', '=', 'members.member_id')
+                ->leftJoin('groups', 'leaders.group_id', '=', 'groups.id')
+                ->leftJoin('leader_positions', 'leaders.leader_position_id', '=', 'leader_positions.id')
                 ->where(function ($query) use ($search) {
-
-                    // Standard search fields
                     $query->where('leaders.id', 'like', '%' . $search . '%')
-                        ->orWhere('members.name', 'like', '%' . $search . '%')
+                        ->orWhere('members.firstname', 'like', '%' . $search . '%')
+                        ->orWhere('members.middlename', 'like', '%' . $search . '%')
+                        ->orWhere('members.lastname', 'like', '%' . $search . '%')
                         ->orWhere('groups.name', 'like', '%' . $search . '%')
                         ->orWhere('users.name', 'like', '%' . $search . '%')
                         ->orWhere('leader_positions.name', 'like', '%' . $search . '%')

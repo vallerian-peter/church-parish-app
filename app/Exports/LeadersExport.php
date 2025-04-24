@@ -23,8 +23,8 @@ class LeadersExport implements FromQuery, WithMapping, WithHeadings
     {
         return [
             $leader->id,
-            $leader->member_id,
-            $leader->member->name,
+            $leader->member->member_id,
+            $leader->member->firstname .' '. $leader->member->middlename .' '.  $leader->member->lasstname,
             $leader->leaderPosition->name,
             $leader->group->name,
             $leader->user->name .' ('. Str::title($leader->user->user_type).')',

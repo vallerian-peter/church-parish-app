@@ -215,11 +215,21 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="nav-link">
+                                <a href="{{ route('admin.announcements.page') }}" class="nav-link">
                                     <span class="mx-3"></span>
                                     <i class="bi bi-megaphone-fill"></i>
                                     <p>
                                         Matangazo
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('admin.baptisms.page') }}" class="nav-link">
+                                    <span class="mx-3"></span>
+                                    <i class="bi bi-stars"></i>
+                                    <p>
+                                        Ubatizo
+                                        <span class="nav-badge badge text-bg-success me-2">{{ $baptisms->count()  }}</span>
                                     </p>
                                 </a>
                             </li>

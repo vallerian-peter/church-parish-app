@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('leaders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('member_id')->constrained('members')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('member_id')->constrained('members')->onDelete('cascade');
             $table->foreignId('group_id')->nullable()->constrained('groups')->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('leader_position_id')->constrained('leader_positions')->onDelete('cascade')->onUpdate('cascade');
             $table->string('status')->default('Active');

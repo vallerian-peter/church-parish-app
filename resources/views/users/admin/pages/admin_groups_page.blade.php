@@ -210,11 +210,21 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="nav-link">
+                                <a href="{{ route('admin.announcements.page') }}" class="nav-link">
                                     <span class="mx-3"></span>
                                     <i class="bi bi-megaphone-fill"></i>
                                     <p>
                                         Matangazo
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('admin.baptisms.page') }}" class="nav-link">
+                                    <span class="mx-3"></span>
+                                    <i class="bi bi-stars"></i>
+                                    <p>
+                                        Ubatizo
+                                        <span class="nav-badge badge text-bg-success me-2">{{ $baptisms->count()  }}</span>
                                     </p>
                                 </a>
                             </li>
@@ -302,7 +312,7 @@
                 <!--begin::Row-->
                 <div class="row">
                     <div class="card p-3 rounded-2">
-                        @if($users->isEmpty())
+                        @if($groups->isEmpty())
                             <div class="container p-5 d-flex flex-column align-items-center justify-content-center" style="background-color: #cccccc20;">
                                 <x-heroicon-o-inbox class="text-danger mb-4" style="height: 50px; width: 50px;" />
                                 <h5 class="fw-semibold fst-italic fs-6">Vikundi Hakuna, Jaribu Kuongeza</h5>

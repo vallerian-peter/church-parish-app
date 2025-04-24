@@ -198,11 +198,21 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="nav-link">
+                                <a href="{{ route('admin.announcements.page') }}" class="nav-link">
                                     <span class="mx-3"></span>
                                     <i class="bi bi-megaphone-fill"></i>
                                     <p>
                                         Matangazo
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('admin.baptisms.page') }}" class="nav-link">
+                                    <span class="mx-3"></span>
+                                    <i class="bi bi-stars"></i>
+                                    <p>
+                                        Ubatizo
+                                        <span class="nav-badge badge text-bg-success me-2">{{ $baptisms->count()  }}</span>
                                     </p>
                                 </a>
                             </li>
@@ -425,7 +435,7 @@
                             </div>
                             <x-heroicon-m-megaphone class="small-box-icon" style="color: #9eeaf920;" fill="currentColor"
                                                  viewBox="0 0 22 22"/>
-                            <a href="#"
+                            <a href="{{ route('admin.announcements.page') }}"
                                class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover" style="border-top: 1px solid #ccc2a420;">
                                 More info <i class="bi bi-arrow-right"></i>
                             </a>

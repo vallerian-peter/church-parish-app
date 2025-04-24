@@ -25,8 +25,8 @@
     @foreach($leaders as $index => $leader)
         <tr style="background-color: {{ $index % 2 === 0 ? '#f2f2f2' : '#fff' }}; padding: 10px 2px;">
             <td style="border: 1px solid #000;">{{ $index + 1 }}</td>
-            <td style="border: 1px solid #000;">{{ $leader->member->id }}</td>
-            <td style="border: 1px solid #000;">{{ $leader->member->name }}</td>
+            <td style="border: 1px solid #000;">{{ $leader->member->member_id }}</td>
+            <td style="border: 1px solid #000;">{{ $leader->member->firstname .' '. $leader->member->middlename .' '. $leader->member->lastname }}</td>
             <td style="border: 1px solid #000;">{{ $leader->leaderPosition->name }}</td>
             <td style="border: 1px solid #000;">{{ $leader->group->name }}</td>
             <td style="border: 1px solid #000;">{{ $leader->user->name .'('. $leader->user->user_type .')' }}</td>

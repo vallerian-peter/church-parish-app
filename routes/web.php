@@ -48,8 +48,16 @@ Route::middleware(['auth','userAuth:admin'])->group(function () {
     Route::post('/admin/editLeader', [AdminManipulationController::class, 'adminEditLeader'])->name('admin.edit.leader');
     Route::get('/admin/deleteLeader/{id}', [AdminManipulationController::class, 'adminDeleteLeader'])->name('admin.delete.leader');
 
-});
+    Route::get('/admin/announcementsPage', [AdminViewPageController::class, 'adminViewAnnouncementsPage'])->name('admin.announcements.page');
+    Route::post('/admin/addAnnouncementsPage', [AdminManipulationController::class, 'adminAddAnnouncement'])->name('addAnnouncement');
+    Route::post('/admin/editAnnouncement', [AdminManipulationController::class, 'adminEditAnnouncement'])->name('admin.edit.announcement');
+    Route::get('/admin/deleteAnnouncement/{id}', [AdminManipulationController::class, 'adminDeleteAnnouncement'])->name('admin.delete.announcement');
 
+    Route::get('/admin/baptismsPage', [AdminViewPageController::class, 'adminViewBaptismsPage'])->name('admin.baptisms.page');
+    Route::post('/admin/addBaptismPage', [AdminManipulationController::class, 'adminAddBaptism'])->name('admin.add.baptism');
+    Route::post('/admin/editBaptism', [AdminManipulationController::class, 'adminEditBaptism'])->name('admin.edit.baptism');
+    Route::get('/admin/deleteBaptism/{id}', [AdminManipulationController::class, 'adminDeleteBaptism'])->name('admin.delete.baptism');
+});
 
 Route::middleware(['auth', 'userAuth:katibu'])->group(function () {
 
